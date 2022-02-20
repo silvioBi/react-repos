@@ -1,6 +1,11 @@
-# Overview
+# Overview and how to run
 
 Hi there this is a simple app that renders list of react repositories from [Github Graphql API v4](https://developer.github.com/v4/).
+
+In order to run the app locally:
+1. In your browser console `localStorage.setItem('GITHUB_API_TOKEN', 'the-long-token-you-were-given')`
+2. Create an `.env.local` file with content `REACT_APP_GITHUB_API_ENDPOINT = https://api.github.com/graphql`
+3. Run `npm run start`
 
 ## Available Scripts
 
@@ -29,4 +34,5 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-# [sb] TODO also add the other scripts to readme file
+
+// [sb] TODO also add the other scripts to readme file 

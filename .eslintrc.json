@@ -13,7 +13,6 @@
   "parserOptions": {
     "project": "./tsconfig.json",
     "ecmaFeatures": {
-      "jsx": true,
       "tsx": true
     },
     "ecmaVersion": "latest",
@@ -21,6 +20,9 @@
   },
   "plugins": ["react", "@typescript-eslint"],
   "rules": {
+    "no-underscore-dangle": "off",
+    "react/require-default-props": "off",
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
-  }
+  },
+  "ignorePatterns": ["src/codegen", "*.graphql"]
 }
