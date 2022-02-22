@@ -1,5 +1,5 @@
 import * as React from "react";
-import { render, cleanup, fireEvent, act } from "@testing-library/react";
+import { render, cleanup, fireEvent, waitFor } from "@testing-library/react";
 import { ApolloError } from "@apollo/client/errors";
 import Repos from "./Repos";
 
@@ -94,17 +94,11 @@ describe("Repos", () => {
 
   it("fetches more results on button click", async () => {
     const { getByText } = render(<Repos />);
-    act(() => {
-      fireEvent(
-        getByText(/Load more/i),
-        new MouseEvent("click", {
-          bubbles: true,
-          cancelable: true,
-        })
-      );
-    });
-    expect(mockFetchMore.mock.calls[0][0]).toStrictEqual({
-      variables: { after: "MDEwOlJlcG9zaXRvcnkxODU1NzcxOTA=" },
+    fireEvent.click(getByText(/Load more/i));
+    await waitFor(() => {
+      expect(mockFetchMore.mock.calls[0][0]).toStrictEqual({
+        variables: { after: "MDEwOlJlcG9zaXRvcnkxODU1NzcxOTA=" },
+      });
     });
   });
 });
