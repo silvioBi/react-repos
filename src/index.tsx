@@ -42,7 +42,6 @@ const client = new ApolloClient({
   cache,
 });
 
-// [sb] TODO please test me
 // [sb] TODO when you will add more elements add a custom theme to ChakraProvider
 ReactDOM.render(
   <React.StrictMode>

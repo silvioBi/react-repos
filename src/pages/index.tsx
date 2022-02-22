@@ -4,7 +4,6 @@ import Repos from "./repos/Repos";
 import NoMatch from "./nomatch/NoMatch";
 
 export default function Pages() {
-  // [sb] TODO please test me
   return (
     <Router>
       <Routes>
