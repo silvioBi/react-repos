@@ -1,5 +1,6 @@
 import * as React from "react";
 import { ApolloError } from "@apollo/client/errors";
+import { Spinner, Center } from "@chakra-ui/react";
 
 interface QueryResultDisplayProps {
   loading?: boolean;
@@ -23,8 +24,11 @@ function QueryResultDisplay({
     return <p>Error: {error.message}</p>;
   }
   if (loading) {
-    // [sb] TODO display a spinner
-    return <p>Loading...</p>;
+    return (
+      <Center height="100vh">
+        <Spinner />
+      </Center>
+    );
   }
   if (!hasData) {
     // [sb] TODO display something nicer

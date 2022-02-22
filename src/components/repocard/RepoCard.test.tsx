@@ -7,11 +7,16 @@ describe("RepoCard", () => {
 
   it("renders correctly repo card", async () => {
     const { getByText } = render(
-      <RepoCard name="cool-repo" stargazerCount={200} forkCount={10} />
+      <RepoCard
+        name="cool-repo"
+        stargazerCount={200}
+        forkCount={10}
+        description="lorem ipsum"
+        url="http://www.google.com"
+      />
     );
     getByText(/cool-repo/i);
     getByText(/200/i);
     getByText(/10/i);
   });
-  // [sb] TODO add tests for other scenarios
 });

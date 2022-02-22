@@ -23966,7 +23966,6 @@ export type WorkflowRunPendingDeploymentRequestsArgs = {
 
 export type ReposQueryVariables = Exact<{
   after?: InputMaybe<Scalars["String"]>;
-  query?: InputMaybe<Scalars["String"]>;
 }>;
 
 export type ReposQuery = {
@@ -23976,13 +23975,14 @@ export type ReposQuery = {
     repositoryCount: number;
     pageInfo: {
       __typename?: "PageInfo";
-      endCursor?: string | null;
-      hasNextPage: boolean;
       hasPreviousPage: boolean;
+      hasNextPage: boolean;
       startCursor?: string | null;
+      endCursor?: string | null;
     };
     edges?: Array<{
       __typename?: "SearchResultItemEdge";
+      cursor: string;
       node?:
         | { __typename?: "App" }
         | { __typename?: "Discussion" }
@@ -23996,6 +23996,8 @@ export type ReposQuery = {
             name: string;
             stargazerCount: number;
             forkCount: number;
+            description?: string | null;
+            url: any;
           }
         | { __typename?: "User" }
         | null;
@@ -24004,24 +24006,29 @@ export type ReposQuery = {
 };
 
 export const ReposDocument = gql`
-  query Repos(
-    $after: String = null
-    $query: String = "topic:react sort:stars-desc"
-  ) {
-    search(query: $query, type: REPOSITORY, after: $after, last: 5) {
+  query Repos($after: String) {
+    search(
+      type: REPOSITORY
+      first: 10
+      after: $after
+      query: "topic:react sort:stars-desc"
+    ) {
       pageInfo {
-        endCursor
-        hasNextPage
         hasPreviousPage
+        hasNextPage
         startCursor
+        endCursor
       }
       edges {
+        cursor
         node {
           ... on Repository {
             id
             name
             stargazerCount
             forkCount
+            description
+            url
           }
         }
       }
@@ -24043,7 +24050,6 @@ export const ReposDocument = gql`
  * const { data, loading, error } = useReposQuery({
  *   variables: {
  *      after: // value for 'after'
- *      query: // value for 'query'
  *   },
  * });
  */

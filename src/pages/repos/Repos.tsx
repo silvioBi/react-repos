@@ -1,4 +1,6 @@
 import * as React from "react";
+import { Button, Center, Heading, Stack } from "@chakra-ui/react";
+import { useState } from "react";
 import { useReposQuery } from "../../codegen/generated";
 import QueryResultDisplay from "../../components/queryresultdisplay/QueryResultDisplay";
 import RepoCard from "../../components/repocard/RepoCard";
@@ -8,14 +10,9 @@ import RepoCard from "../../components/repocard/RepoCard";
  * We display a list of repos fetched with useQuery with the REPOS query
  */
 function Repos(): JSX.Element {
-  const { error, loading, data } = useReposQuery({
-    variables: {
-      // [sb] TODO this variable will be used for pagination
-      after: null,
-      // [sb] TODO once implemented search add query:whatever to the query text
-      query: "query:react topic:react sort:stars-desc",
-    },
-  });
+  const [isLoadingMore, setIsloadingMore] = useState(false);
+  // [sb] TODO to implement search add query:whatever to {options: query}
+  const { error, loading, data, fetchMore } = useReposQuery();
 
   const repos = (data?.search?.edges ?? [])
     .map((edge) =>
@@ -25,14 +22,37 @@ function Repos(): JSX.Element {
 
   return (
     <QueryResultDisplay error={error} loading={loading} hasData={data != null}>
-      {repos.map((repo) => (
-        <RepoCard
-          key={repo.id}
-          name={repo.name}
-          stargazerCount={repo.stargazerCount}
-          forkCount={repo.forkCount}
-        />
-      ))}
+      <Center>
+        <Stack spacing="3" m="10" maxWidth="700">
+          <Heading mb="8">✨ Cool React Repos</Heading>
+          {repos.map((repo) => (
+            <RepoCard
+              key={repo.id}
+              name={repo.name}
+              stargazerCount={repo.stargazerCount}
+              forkCount={repo.forkCount}
+              description={repo.description}
+              url={repo.url}
+            />
+          ))}
+          <Button
+            isLoading={isLoadingMore}
+            loadingText="Loading..."
+            colorScheme="teal"
+            variant="outline"
+            onClick={async () => {
+              setIsloadingMore(true);
+              await fetchMore({
+                variables: { after: data?.search?.pageInfo?.endCursor },
+              });
+              setIsloadingMore(false);
+            }}
+            disabled={!data?.search?.pageInfo?.hasNextPage}
+          >
+            Load more
+          </Button>
+        </Stack>
+      </Center>
     </QueryResultDisplay>
   );
 }

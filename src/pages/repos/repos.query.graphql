@@ -1,24 +1,29 @@
-query Repos(
-    $after: String = null
-    $query: String = "topic:react sort:stars-desc"
+query Repos($after: String) {
+  search(
+    type: REPOSITORY
+    first: 10
+    after: $after
+    query: "topic:react sort:stars-desc"
   ) {
-    search(query: $query, type: REPOSITORY, after: $after, last: 5) {
-      pageInfo {
-        endCursor
-        hasNextPage
-        hasPreviousPage
-        startCursor
-      }
-      edges {
-        node {
-          ... on Repository {
-            id
-            name
-            stargazerCount
-            forkCount
-          }
+    pageInfo {
+      hasPreviousPage
+      hasNextPage
+      startCursor
+      endCursor
+    }
+    edges {
+      cursor
+      node {
+        ... on Repository {
+          id
+          name
+          stargazerCount
+          forkCount
+          description
+          url
         }
       }
-      repositoryCount
     }
+    repositoryCount
+  }
 }

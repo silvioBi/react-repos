@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  react-repos:
+    container_name: react-repos
+    image: react-repos
+    ports:
+      - "80:80"
+    build:
+      context: .
+      target: production

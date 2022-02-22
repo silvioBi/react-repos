@@ -1,5 +1,6 @@
 import * as React from "react";
-import { render, cleanup } from "@testing-library/react";
+import { render, cleanup, fireEvent, act } from "@testing-library/react";
+import { ApolloError } from "@apollo/client/errors";
 import Repos from "./Repos";
 
 const githubMockResponse = {
@@ -7,7 +8,7 @@ const githubMockResponse = {
     __typename: "SearchResultItemConnection",
     pageInfo: {
       __typename: "PageInfo",
-      endCursor: "Y3Vyc29yOjU=",
+      endCursor: "MDEwOlJlcG9zaXRvcnkxODU1NzcxOTA=",
       hasNextPage: true,
       hasPreviousPage: false,
       startCursor: "Y3Vyc29yOjE=",
@@ -68,21 +69,21 @@ const githubMockResponse = {
   },
 };
 
-const mockUseReposQuery = jest.fn();
+const mockFetchMore = jest.fn();
 
 jest.mock("../../codegen/generated", () => ({
-  useReposQuery: () => mockUseReposQuery(),
+  useReposQuery: () => ({
+    error: null as ApolloError,
+    loading: false,
+    data: githubMockResponse,
+    fetchMore: mockFetchMore,
+  }),
 }));
 
 describe("Repos", () => {
   afterEach(cleanup);
 
   it("renders all cards", async () => {
-    mockUseReposQuery.mockReturnValueOnce({
-      error: null,
-      loading: false,
-      data: githubMockResponse,
-    });
     const { getByText } = render(<Repos />);
     getByText(/use-query-params/i);
     getByText(/react-awesome-query-builder/i);
@@ -91,5 +92,19 @@ describe("Repos", () => {
     getByText(/next-shopify-storefront/i);
   });
 
-  // [sb] TODO add tests for other scenarios
+  it("fetches more results on button click", async () => {
+    const { getByText } = render(<Repos />);
+    act(() => {
+      fireEvent(
+        getByText(/Load more/i),
+        new MouseEvent("click", {
+          bubbles: true,
+          cancelable: true,
+        })
+      );
+    });
+    expect(mockFetchMore.mock.calls[0][0]).toStrictEqual({
+      variables: { after: "MDEwOlJlcG9zaXRvcnkxODU1NzcxOTA=" },
+    });
+  });
 });
